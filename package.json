@@ -1,0 +1,30 @@
+{
+	"name": "nba-mdx-mcp",
+	"version": "0.0.1",
+	"private": true,
+	"scripts": {
+		"build:ui": "vite build && node scripts/embed-html.mjs",
+		"deploy": "npm run build:ui && wrangler deploy",
+		"dev": "wrangler dev",
+		"start": "wrangler dev",
+		"cf-typegen": "wrangler types",
+		"type-check": "tsc --noEmit"
+	},
+	"dependencies": {
+		"@modelcontextprotocol/ext-apps": "^1.0.1",
+		"agents": "^0.4.1",
+		"zod": "^4.3.6"
+	},
+	"devDependencies": {
+		"@mdx-js/mdx": "^3.1.0",
+		"@types/react": "^19.2.14",
+		"@types/react-dom": "^19.2.3",
+		"@vitejs/plugin-react": "^5.1.4",
+		"react": "^19.2.4",
+		"react-dom": "^19.2.4",
+		"typescript": "5.9.3",
+		"vite": "^7.3.1",
+		"vite-plugin-singlefile": "^2.3.0",
+		"wrangler": "^4.65.0"
+	}
+}

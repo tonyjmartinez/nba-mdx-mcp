@@ -1,0 +1,88 @@
+---
+interface Props {
+	title: string;
+	date: string;
+	author: string;
+}
+
+const { title, date, author } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta name="color-scheme" content="dark" />
+		<title>{title} | NBA Blog</title>
+		<link rel="stylesheet" href="/styles/global.css" />
+	</head>
+	<body>
+		<a href="#main-content" class="skip-link">Skip to main content</a>
+		<nav aria-label="Main navigation">
+			<div class="nav-inner">
+				<a href="/" class="nav-brand">NBA Blog</a>
+			</div>
+		</nav>
+		<main id="main-content">
+			<article class="post">
+				<slot />
+			</article>
+		</main>
+		<footer>
+			<p>
+				Built with <a href="https://github.com/tonyjmartinez/nba-mdx-mcp">NBA Blog Studio</a>
+				&middot; Powered by Astro
+			</p>
+		</footer>
+	</body>
+</html>
+
+<style>
+	.skip-link {
+		position: absolute;
+		left: -9999px;
+		top: 0;
+		z-index: 100;
+		padding: 8px 16px;
+		background: #ff2d78;
+		color: white;
+		font-weight: 700;
+	}
+	.skip-link:focus {
+		left: 0;
+	}
+	nav {
+		border-bottom: 1px solid #1e293b;
+		padding: 12px 0;
+	}
+	.nav-inner {
+		max-width: 720px;
+		margin: 0 auto;
+		padding: 0 16px;
+	}
+	.nav-brand {
+		color: #f1f5f9;
+		text-decoration: none;
+		font-weight: 800;
+		font-size: 1.1rem;
+		letter-spacing: -0.02em;
+	}
+	main {
+		max-width: 720px;
+		margin: 0 auto;
+		padding: 24px 16px;
+	}
+	footer {
+		max-width: 720px;
+		margin: 0 auto;
+		padding: 24px 16px;
+		border-top: 1px solid #1e293b;
+		text-align: center;
+		font-size: 0.82rem;
+		color: #64748b;
+	}
+	footer a {
+		color: #94a3b8;
+	}
+</style>

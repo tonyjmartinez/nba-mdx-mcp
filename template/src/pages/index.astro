@@ -1,0 +1,171 @@
+---
+import { getCollection } from "astro:content";
+
+const posts = (await getCollection("posts")).sort(
+	(a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime()
+);
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta name="color-scheme" content="dark" />
+		<title>NBA Blog</title>
+		<link rel="stylesheet" href="/styles/global.css" />
+	</head>
+	<body>
+		<a href="#main-content" class="skip-link">Skip to main content</a>
+		<header class="site-header">
+			<h1>NBA Blog</h1>
+			<p>Data-driven NBA content with interactive visualizations</p>
+		</header>
+		<main id="main-content">
+			{posts.length === 0 ? (
+				<div class="empty">
+					<p>No posts yet. Use the NBA Blog Studio MCP server with Claude to write your first post!</p>
+				</div>
+			) : (
+				<ul class="post-list">
+					{posts.map((post) => (
+						<li>
+							<a href={`/posts/${post.slug}`}>
+								<article>
+									<h2>{post.data.title}</h2>
+									<div class="meta">
+										<time datetime={post.data.date}>{post.data.date}</time>
+										<span>&middot;</span>
+										<span>{post.data.author}</span>
+									</div>
+									{post.data.description && <p>{post.data.description}</p>}
+									{post.data.tags.length > 0 && (
+										<div class="tags">
+											{post.data.tags.map((tag) => (
+												<span class="tag">{tag}</span>
+											))}
+										</div>
+									)}
+								</article>
+							</a>
+						</li>
+					))}
+				</ul>
+			)}
+		</main>
+		<footer>
+			<p>
+				Built with <a href="https://github.com/tonyjmartinez/nba-mdx-mcp">NBA Blog Studio</a>
+			</p>
+		</footer>
+	</body>
+</html>
+
+<style>
+	.skip-link {
+		position: absolute;
+		left: -9999px;
+		top: 0;
+		z-index: 100;
+		padding: 8px 16px;
+		background: #ff2d78;
+		color: white;
+		font-weight: 700;
+	}
+	.skip-link:focus {
+		left: 0;
+	}
+	.site-header {
+		max-width: 720px;
+		margin: 0 auto;
+		padding: 40px 16px 24px;
+		text-align: center;
+	}
+	.site-header h1 {
+		font-size: 2rem;
+		font-weight: 800;
+		color: #f1f5f9;
+		margin: 0 0 8px;
+		letter-spacing: -0.03em;
+	}
+	.site-header p {
+		color: #94a3b8;
+		font-size: 1rem;
+		margin: 0;
+	}
+	main {
+		max-width: 720px;
+		margin: 0 auto;
+		padding: 0 16px 40px;
+	}
+	.empty {
+		text-align: center;
+		padding: 40px 0;
+		color: #94a3b8;
+	}
+	.post-list {
+		list-style: none;
+		padding: 0;
+		margin: 0;
+	}
+	.post-list li {
+		margin-bottom: 16px;
+	}
+	.post-list a {
+		display: block;
+		text-decoration: none;
+		padding: 16px 20px;
+		background: #1e293b;
+		border-radius: 10px;
+		border: 1px solid #334155;
+		transition: border-color 0.2s;
+	}
+	.post-list a:hover {
+		border-color: #ff2d78;
+	}
+	.post-list h2 {
+		margin: 0 0 6px;
+		font-size: 1.15rem;
+		font-weight: 700;
+		color: #f1f5f9;
+	}
+	.meta {
+		font-size: 0.82rem;
+		color: #64748b;
+		display: flex;
+		gap: 6px;
+	}
+	.meta time {
+		color: #94a3b8;
+	}
+	.post-list p {
+		margin: 8px 0 0;
+		font-size: 0.9rem;
+		color: #94a3b8;
+	}
+	.tags {
+		display: flex;
+		gap: 6px;
+		margin-top: 8px;
+	}
+	.tag {
+		font-size: 0.75rem;
+		padding: 2px 8px;
+		border-radius: 12px;
+		background: #0f172a;
+		color: #94a3b8;
+		border: 1px solid #334155;
+	}
+	footer {
+		max-width: 720px;
+		margin: 0 auto;
+		padding: 24px 16px;
+		border-top: 1px solid #1e293b;
+		text-align: center;
+		font-size: 0.82rem;
+		color: #64748b;
+	}
+	footer a {
+		color: #94a3b8;
+	}
+</style>

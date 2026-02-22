@@ -1,0 +1,30 @@
+---
+import { getCollection } from "astro:content";
+import BlogPost from "../../layouts/BlogPost.astro";
+import * as nba from "../../components/nba/index.js";
+
+export async function getStaticPaths() {
+	const posts = await getCollection("posts");
+	return posts.map((post) => ({
+		params: { slug: post.slug },
+		props: { post },
+	}));
+}
+
+const { post } = Astro.props;
+const { Content } = await post.render();
+---
+
+<BlogPost title={post.data.title} date={post.data.date} author={post.data.author}>
+	<Content components={{
+		Bar: nba.Bar,
+		DonutChart: nba.DonutChart,
+		PlayerCard: nba.PlayerCard,
+		PlayerCompare: nba.PlayerCompare,
+		ShootingSplits: nba.ShootingSplits,
+		StatHighlight: nba.StatHighlight,
+		LeaderboardTable: nba.LeaderboardTable,
+		QuoteBlock: nba.QuoteBlock,
+		HeroImage: nba.HeroImage,
+	}} />
+</BlogPost>
