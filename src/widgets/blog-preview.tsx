@@ -167,6 +167,19 @@ function BlogPreviewApp() {
 		},
 	});
 
+	// Standalone demo mode: render demo data directly, before checking for MCP errors.
+	// useApp() will fail with -32601 when there is no MCP client present (e.g. landing
+	// page), so we must handle this case before surfacing that error.
+	const demoData = (window as Window & { __DEMO_DATA__?: { mdx: string } }).__DEMO_DATA__;
+	if (demoData?.mdx && !isConnected) {
+		return (
+			<>
+				<style dangerouslySetInnerHTML={{ __html: blogStyles }} />
+				<MDXRenderer mdxContent={demoData.mdx} />
+			</>
+		);
+	}
+
 	if (error ?? dataError) {
 		return (
 			<div style={{ textAlign: "center", color: "#f87171", padding: "36px 0" }}>
@@ -176,17 +189,6 @@ function BlogPreviewApp() {
 	}
 
 	if (!isConnected || !mdxContent) {
-		// Check for demo data (standalone mode)
-		const demoData = (window as Window & { __DEMO_DATA__?: { mdx: string } }).__DEMO_DATA__;
-		if (demoData?.mdx) {
-			return (
-				<>
-					<style dangerouslySetInnerHTML={{ __html: blogStyles }} />
-					<MDXRenderer mdxContent={demoData.mdx} />
-				</>
-			);
-		}
-
 		return (
 			<div style={{ textAlign: "center", color: "#94a3b8", padding: "36px 0" }}>
 				Waiting for blog post content...
