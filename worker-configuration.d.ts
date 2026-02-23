@@ -1,5 +1,9 @@
 interface Env {
 	MCP_OBJECT: DurableObjectNamespace;
+	/** Anthropic API key — set via `wrangler secret put ANTHROPIC_API_KEY` */
+	ANTHROPIC_API_KEY: string;
+	/** Public base URL of this Worker, e.g. https://nba-mdx-mcp.example.workers.dev */
+	WORKER_URL: string;
 }
 
 // Cloudflare Workers runtime globals

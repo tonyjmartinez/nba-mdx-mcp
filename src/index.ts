@@ -3,7 +3,10 @@ import { McpAgent } from "agents/mcp";
 import { registerListComponentsTool } from "./tools/list-components.js";
 import { registerBlogCreateTool } from "./tools/blog-create.js";
 import { registerBlogPreviewTool } from "./tools/blog-preview.js";
+import { registerGenerateEmbedTool } from "./tools/generate-embed.js";
 import { blogPreviewHtml } from "./widgets/blog-preview-html.js";
+import { embedPageHtml } from "./widgets/embed-page-html.js";
+import { handleStatsRequest } from "./api/stats.js";
 
 // ── Demo MDX for the landing page ────────────────────────────────────────────
 const DEMO_MDX = `---
@@ -94,16 +97,21 @@ The case for Klay as the purest shooter of the two is real. His release is faste
 `;
 
 // ── MCP Agent ────────────────────────────────────────────────────────────────
-export class NBABlogMCP extends McpAgent {
+export class NBABlogMCP extends McpAgent<Env> {
+	// `env` is injected by the Cloudflare DO runtime; declare it so TS knows it exists.
+	declare env: Env;
+
 	server = new McpServer({
 		name: "NBA Blog Studio",
-		version: "1.0.0",
+		version: "2.0.0",
 	});
 
 	async init() {
+		const workerUrl = this.env.WORKER_URL ?? "https://nba-mdx-mcp.tonyjmartinez.workers.dev";
 		registerListComponentsTool(this.server);
 		registerBlogCreateTool(this.server);
 		registerBlogPreviewTool(this.server);
+		registerGenerateEmbedTool(this.server, workerUrl);
 	}
 }
 
@@ -112,12 +120,31 @@ export default {
 	fetch(request: Request, env: Env, ctx: ExecutionContext) {
 		const url = new URL(request.url);
 
-		// MCP protocol endpoint
+		// ── MCP protocol endpoint ──────────────────────────────────────────────
 		if (url.pathname === "/mcp") {
 			return NBABlogMCP.serve("/mcp").fetch(request, env, ctx);
 		}
 
-		// Landing page: standalone demo of the blog preview
+		// ── Stats API: Claude-powered live data lookup ─────────────────────────
+		// GET /api/stats?component=player-compare&player1=Jokic&player2=SGA
+		if (url.pathname === "/api/stats") {
+			return handleStatsRequest(request, env);
+		}
+
+		// ── Embed iframe page ──────────────────────────────────────────────────
+		// GET /embed?component=player-compare&player1=Jokic&player2=SGA
+		if (url.pathname === "/embed") {
+			return new Response(embedPageHtml, {
+				headers: {
+					"Content-Type": "text/html; charset=utf-8",
+					// Allow any site to iframe this endpoint
+					"X-Frame-Options": "ALLOWALL",
+					"Content-Security-Policy": "frame-ancestors *",
+				},
+			});
+		}
+
+		// ── Landing page: MDX blog preview demo ───────────────────────────────
 		if (url.pathname === "/" || url.pathname === "") {
 			const demoScript = `<script>window.__DEMO_DATA__ = ${JSON.stringify({ mdx: DEMO_MDX })};</script>`;
 			const html = blogPreviewHtml.replace("</body>", `${demoScript}</body>`);

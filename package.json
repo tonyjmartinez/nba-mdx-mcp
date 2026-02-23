@@ -4,13 +4,16 @@
 	"private": true,
 	"scripts": {
 		"build:ui": "vite build && node scripts/embed-html.mjs",
-		"deploy": "npm run build:ui && wrangler deploy",
+		"build:embed": "vite build --config vite.embed.config.ts && node scripts/embed-page.mjs",
+		"build": "npm run build:ui && npm run build:embed",
+		"deploy": "npm run build && wrangler deploy",
 		"dev": "wrangler dev",
 		"start": "wrangler dev",
 		"cf-typegen": "wrangler types",
 		"type-check": "tsc --noEmit"
 	},
 	"dependencies": {
+		"@anthropic-ai/sdk": "^0.78.0",
 		"@modelcontextprotocol/ext-apps": "^1.0.1",
 		"agents": "^0.4.1",
 		"zod": "^4.3.6"

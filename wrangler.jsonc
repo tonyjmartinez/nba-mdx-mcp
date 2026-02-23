@@ -20,5 +20,8 @@
 	},
 	"observability": {
 		"enabled": true
+	},
+	"vars": {
+		"WORKER_URL": "https://nba-mdx-mcp.tonyjmartinez.workers.dev"
 	}
 }
