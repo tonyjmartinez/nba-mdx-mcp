@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "nba-blog-studio": {
+      "type": "sse",
+      "url": "https://YOUR_MCP_SERVER_URL/mcp"
+    }
+  }
+}
