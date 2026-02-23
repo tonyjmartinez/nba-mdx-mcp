@@ -3,6 +3,8 @@ import { McpAgent } from "agents/mcp";
 import { registerListComponentsTool } from "./tools/list-components.js";
 import { registerBlogCreateTool } from "./tools/blog-create.js";
 import { registerBlogPreviewTool } from "./tools/blog-preview.js";
+import { registerConnectGithubTool } from "./tools/connect-github.js";
+import { registerPublishToGithubTool } from "./tools/publish-to-github.js";
 import { blogPreviewHtml } from "./widgets/blog-preview-html.js";
 
 // ── Demo MDX for the landing page ────────────────────────────────────────────
@@ -93,8 +95,20 @@ The case for Klay as the purest shooter of the two is real. His release is faste
 </QuoteBlock>
 `;
 
+// ── Agent state ───────────────────────────────────────────────────────────────
+export interface AgentState {
+	/** GitHub credentials and repo, stored after connect_github is called. */
+	github?: {
+		token: string;
+		owner: string;
+		repo: string;
+	};
+	/** True once the Astro template has been pushed to the repo. */
+	repoInitialized?: boolean;
+}
+
 // ── MCP Agent ────────────────────────────────────────────────────────────────
-export class NBABlogMCP extends McpAgent {
+export class NBABlogMCP extends McpAgent<Env, AgentState, Record<string, never>> {
 	server = new McpServer({
 		name: "NBA Blog Studio",
 		version: "1.0.0",
@@ -104,6 +118,8 @@ export class NBABlogMCP extends McpAgent {
 		registerListComponentsTool(this.server);
 		registerBlogCreateTool(this.server);
 		registerBlogPreviewTool(this.server);
+		registerConnectGithubTool(this.server, this);
+		registerPublishToGithubTool(this.server, this);
 	}
 }
 

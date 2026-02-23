@@ -3,8 +3,10 @@
 	"version": "0.0.1",
 	"private": true,
 	"scripts": {
+		"build:template": "node scripts/embed-template.mjs",
 		"build:ui": "vite build && node scripts/embed-html.mjs",
-		"deploy": "npm run build:ui && wrangler deploy",
+		"build": "npm run build:template && npm run build:ui",
+		"deploy": "npm run build && wrangler deploy",
 		"dev": "wrangler dev",
 		"start": "wrangler dev",
 		"cf-typegen": "wrangler types",
