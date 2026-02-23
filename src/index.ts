@@ -3,6 +3,7 @@ import { McpAgent } from "agents/mcp";
 import { registerListComponentsTool } from "./tools/list-components.js";
 import { registerBlogCreateTool } from "./tools/blog-create.js";
 import { registerBlogPreviewTool } from "./tools/blog-preview.js";
+import { registerScaffoldTool } from "./tools/scaffold.js";
 import { blogPreviewHtml } from "./widgets/blog-preview-html.js";
 
 // ── Demo MDX for the landing page ────────────────────────────────────────────
@@ -101,6 +102,7 @@ export class NBABlogMCP extends McpAgent {
 	});
 
 	async init() {
+		registerScaffoldTool(this.server);
 		registerListComponentsTool(this.server);
 		registerBlogCreateTool(this.server);
 		registerBlogPreviewTool(this.server);

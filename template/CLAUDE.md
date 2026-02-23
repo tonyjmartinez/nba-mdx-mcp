@@ -8,9 +8,34 @@ NBA blog posts with rich visualization components.
 
 | Tool | When to use |
 |------|-------------|
+| `scaffold_blog` | **First-time setup** — writes all project files, runs npm install, commits, and pushes |
 | `list_components` | Browse all available visualization components with full prop schemas |
 | `create_blog_post` | **Start every post here** — returns a structured outline + relevant components |
 | `preview_blog_post` | Render completed MDX as a rich visual preview inside Claude |
+
+---
+
+## First-time Setup
+
+If the user says "set up my blog" or "scaffold the blog" (or the repo is empty), call `scaffold_blog`.
+
+The tool returns all project files with their paths and contents. Write each file, then:
+
+```bash
+npm install
+git add -A
+git commit -m "Initial NBA blog setup"
+git push
+```
+
+Then show the user these Cloudflare Pages setup steps:
+
+1. Go to **dash.cloudflare.com** → Pages → **Create a project** → Connect to Git
+2. Select the repo
+3. Build settings: Framework = Astro, Build command = `npm run build`, Output dir = `dist`
+4. Click **Save and Deploy**
+
+The blog will be live at `your-project.pages.dev` and auto-deploys on every push.
 
 ---
 

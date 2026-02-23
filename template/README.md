@@ -2,40 +2,25 @@
 
 A data-driven NBA blog with interactive visualization components, powered by [NBA Blog Studio](https://github.com/tonyjmartinez/nba-mdx-mcp).
 
-Write blog posts in plain English. Claude writes the MDX, shows you a preview, and pushes to your repo. Cloudflare deploys it automatically.
+Describe what you want in plain English. Claude writes the MDX, shows you a preview, and pushes to your repo. Cloudflare deploys it automatically.
 
 ---
 
-## Setup (one-time)
+## Setup (one-time, ~5 minutes)
 
-### 1. Fork & Clone
+### 1. Create an empty GitHub repo
 
-Fork this repo on GitHub, then clone your fork:
+Create a new empty repository on GitHub (no README, no .gitignore — just a blank repo). Clone it and open Claude Code:
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/nba-blog.git
-cd nba-blog
-npm install
+git clone https://github.com/YOUR_USERNAME/YOUR_REPO.git
+cd YOUR_REPO
+claude
 ```
 
-### 2. Deploy to Cloudflare Pages
+### 2. Connect the MCP server
 
-Connect your repo to Cloudflare Pages so every git push auto-deploys:
-
-1. Go to the [Cloudflare Pages dashboard](https://dash.cloudflare.com/?to=/:account/pages)
-2. Click **Create a project** → **Connect to Git**
-3. Select your forked repo
-4. Set the build config:
-   - **Framework preset:** Astro
-   - **Build command:** `npm run build`
-   - **Build output directory:** `dist`
-5. Click **Save and Deploy**
-
-Your blog is now live at `your-project.pages.dev`. Every future `git push` triggers an automatic redeploy.
-
-### 3. Connect the MCP Server
-
-Update `.mcp.json` in this repo with your MCP server URL:
+In Claude Code, add the NBA Blog Studio MCP server to your settings (run `/mcp` to open the MCP config panel):
 
 ```json
 {
@@ -48,97 +33,53 @@ Update `.mcp.json` in this repo with your MCP server URL:
 }
 ```
 
-### 4. Open Claude Code
+### 3. Scaffold the blog
 
-```bash
-claude
-```
+Ask Claude:
 
-Claude Code will automatically detect `.mcp.json` and connect to the MCP server.
-Check the connection with `/mcp` — you should see `nba-blog-studio` listed.
+> "Set up my NBA blog"
+
+Claude calls `scaffold_blog`, writes all the project files, runs `npm install`, and makes the initial commit and push. Your repo is now a working Astro blog — no cloning a template, no manual file copying.
+
+### 4. Connect Cloudflare Pages
+
+1. Go to [Cloudflare Pages](https://dash.cloudflare.com/?to=/:account/pages) → **Create a project** → **Connect to Git**
+2. Select your repo
+3. Build settings:
+   - **Framework preset:** Astro
+   - **Build command:** `npm run build`
+   - **Build output directory:** `dist`
+4. Click **Save and Deploy**
+
+Your blog is live at `your-project.pages.dev`. Every `git push` auto-deploys.
 
 ---
 
-## Writing a Blog Post
+## Writing Blog Posts
 
-Once Claude Code is open, just describe what you want:
+Once set up, just describe what you want:
 
-> "Write a blog post comparing Stephen Curry and Klay Thompson this season"
+> "Write a blog post comparing LeBron James and Stephen Curry this season"
 
 Claude will:
 
-1. **Call `create_blog_post`** to get a structured outline and relevant visualization components
-2. **Write the MDX** using its NBA knowledge to populate all the stats and analysis
-3. **Call `preview_blog_post`** to render a rich visual preview inside Claude so you can see exactly how it'll look
-4. **Save the file** to `src/content/posts/curry-vs-thompson.mdx`
-5. **Commit and push** — Cloudflare deploys the post within ~60 seconds
+1. Call `create_blog_post` to get a structured outline and the relevant components
+2. Write the MDX using its NBA knowledge for all the stats
+3. Call `preview_blog_post` to show you a rendered preview in-chat
+4. Save the file to `src/content/posts/your-slug.mdx`
+5. Commit and push — Cloudflare deploys the post within ~60 seconds
 
 ### Example prompts
 
 ```
 Write a blog post comparing LeBron James and Stephen Curry's 2024-25 seasons
 
-Write about Victor Wembanyama's sophomore leap — stats, highlights, and impact
+Write about Victor Wembanyama's sophomore season highlights
 
 Do a midseason MVP race breakdown with a leaderboard of the top contenders
 
-Write a deep dive on the Boston Celtics' three-point shooting dominance
+Write a deep dive on the Boston Celtics' three-point shooting
 ```
-
----
-
-## What a Generated Post Looks Like
-
-Here's an example of what Claude produces — this is `src/content/posts/jokic-vs-embiid.mdx`:
-
-```mdx
----
-title: "Jokic vs Embiid: The MVP Race Heats Up"
-date: "2024-03-15"
-author: "NBA Blog Studio"
-tags: ["MVP", "Centers", "Player Comparison"]
-description: "Breaking down the numbers behind the NBA's fiercest rivalry"
----
-
-<HeroImage
-  title="Jokic vs Embiid: The MVP Race Heats Up"
-  subtitle="Breaking down the numbers behind the NBA's fiercest rivalry"
-  colorLeft="#0E2240"
-  colorRight="#006BB6"
-  date="2024-03-15"
-  author="NBA Blog Studio"
-/>
-
-The MVP race is heating up...
-
-<StatHighlight
-  value="26.4 PPG"
-  label="Led all centers in scoring while averaging a near triple-double"
-  playerName="Nikola Jokic"
-  color="#FDB927"
-/>
-
-<PlayerCompare
-  player1={{ name: "Nikola Jokic", team: "Denver Nuggets", ... }}
-  player2={{ name: "Joel Embiid", team: "Philadelphia 76ers", ... }}
-  season="2023-24"
-/>
-
-<LeaderboardTable
-  title="MVP Voting Frontrunners (PPG)"
-  statLabel="PPG"
-  entries={[
-    { rank: 1, name: "Joel Embiid", team: "PHI", value: 33.1 },
-    ...
-  ]}
-/>
-
-<QuoteBlock attribution="Charles Barkley, Inside the NBA">
-  The Joker does things that no big man has ever done.
-</QuoteBlock>
-```
-
-See the full example at `src/content/posts/jokic-vs-embiid.mdx`.
 
 ---
 
@@ -160,37 +101,7 @@ All 9 components render to static HTML with zero client-side JavaScript.
 
 Components are auto-imported in every `.mdx` file — no import statements needed.
 
-Full usage examples for each component are in `CLAUDE.md`.
-
----
-
-## Manual Post Writing
-
-You can also write posts by hand. Create a new file in `src/content/posts/`:
-
-```mdx
----
-title: "Your Post Title"
-date: "2025-01-15"
-author: "Your Name"
-tags: ["NBA", "Analysis"]
-description: "A brief description for the listing page"
----
-
-<HeroImage
-  title="Your Post Title"
-  colorLeft="#552583"
-  colorRight="#FDB927"
-  date="2025-01-15"
-  author="Your Name"
-/>
-
-Your narrative here...
-
-<StatHighlight value="30.2 PPG" label="Career-high scoring season" playerName="Player Name" color="#552583" />
-```
-
-Then commit and push — Cloudflare Pages deploys automatically.
+See `src/content/posts/jokic-vs-embiid.mdx` for a complete working example.
 
 ---
 

@@ -4,7 +4,8 @@
 	"private": true,
 	"scripts": {
 		"build:ui": "vite build && node scripts/embed-html.mjs",
-		"deploy": "npm run build:ui && wrangler deploy",
+		"build:scaffold": "node scripts/embed-template.mjs",
+		"deploy": "npm run build:ui && npm run build:scaffold && wrangler deploy",
 		"dev": "wrangler dev",
 		"start": "wrangler dev",
 		"cf-typegen": "wrangler types",
