@@ -4,6 +4,7 @@ import { registerListComponentsTool } from "./tools/list-components.js";
 import { registerBlogCreateTool } from "./tools/blog-create.js";
 import { registerBlogPreviewTool } from "./tools/blog-preview.js";
 import { blogPreviewHtml } from "./widgets/blog-preview-html.js";
+import { mdxToAgentMarkdown } from "./tools/mdx-to-markdown.js";
 
 // ── Demo MDX for the landing page ────────────────────────────────────────────
 const DEMO_MDX = `---
@@ -123,6 +124,49 @@ export default {
 			const html = blogPreviewHtml.replace("</body>", `${demoScript}</body>`);
 			return new Response(html, {
 				headers: { "Content-Type": "text/html; charset=utf-8" },
+			});
+		}
+
+		// llms.txt — Cloudflare AI agents / LLM-readable site index
+		if (url.pathname === "/llms.txt") {
+			const origin = url.origin;
+			const content = [
+				"# NBA Blog Studio",
+				"",
+				"> Data-driven NBA analysis with interactive statistical visualizations.",
+				"> Built with the NBA Blog Studio MCP server — an AI-native blogging platform",
+				"> that generates rich MDX blog posts with visualization components.",
+				"",
+				"## Demo Article",
+				"",
+				`- [Curry vs. Klay: The Greatest Shooting Backcourt of All Time](${origin}/)`,
+				`  Markdown: ${origin}/demo.md`,
+				"",
+				"## MCP Server",
+				"",
+				`- MCP endpoint: ${origin}/mcp`,
+				"  Use with Claude Desktop or any MCP-compatible client to author your own NBA blog posts.",
+				"",
+				"## Markdown Endpoints",
+				"",
+				`All blog posts are available as structured markdown for AI consumption at \`/demo.md\`.`,
+				"The markdown includes ASCII bar visualizations so AI assistants can render statistics visually.",
+				"",
+			].join("\n");
+
+			return new Response(content, {
+				headers: { "Content-Type": "text/plain; charset=utf-8" },
+			});
+		}
+
+		// /demo.md — Cloudflare AI agents markdown version of the demo article
+		if (url.pathname === "/demo.md") {
+			const markdown = mdxToAgentMarkdown(DEMO_MDX);
+			return new Response(markdown, {
+				headers: {
+					"Content-Type": "text/markdown; charset=utf-8",
+					"Cache-Control": "public, max-age=3600",
+				},
 			});
 		}
 

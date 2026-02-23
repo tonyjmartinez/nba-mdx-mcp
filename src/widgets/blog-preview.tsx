@@ -39,7 +39,7 @@ const components = {
 
 const blogStyles = `
 	* { box-sizing: border-box; margin: 0; padding: 0; }
-	html { font-size: 16px; }
+	html { font-size: 18px; }
 	body {
 		font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
 		background: #0f172a;
@@ -47,6 +47,10 @@ const blogStyles = `
 		line-height: 1.7;
 		padding: 16px;
 		-webkit-font-smoothing: antialiased;
+	}
+	#root {
+		max-width: 860px;
+		margin: 0 auto;
 	}
 	h1 { font-size: 1.6rem; font-weight: 800; color: #f1f5f9; margin: 24px 0 12px; line-height: 1.2; }
 	h2 { font-size: 1.3rem; font-weight: 700; color: #f1f5f9; margin: 20px 0 10px; line-height: 1.3; }
