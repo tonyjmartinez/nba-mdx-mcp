@@ -1,6 +1,5 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { McpAgent } from "agents/mcp";
-import { registerPlayerStatsTools } from "./tools/player-stats.js";
 import { registerListComponentsTool } from "./tools/list-components.js";
 import { registerBlogCreateTool } from "./tools/blog-create.js";
 import { registerBlogPreviewTool } from "./tools/blog-preview.js";
@@ -58,7 +57,6 @@ export class NBABlogMCP extends McpAgent {
 	});
 
 	async init() {
-		registerPlayerStatsTools(this.server);
 		registerListComponentsTool(this.server);
 		registerBlogCreateTool(this.server);
 		registerBlogPreviewTool(this.server);
