@@ -5,11 +5,14 @@
  * the matching component. Designed to be embedded as an <iframe> on any CMS
  * (Hashnode, WordPress, Ghost, Substack, etc.).
  *
- * URL format:
+ * URL format (live lookup via Claude):
  *   /embed?component=player-compare&player1=Nikola+Jokic&player2=SGA&season=2024-25
  *   /embed?component=leaderboard&stat=ppg&season=2024-25
  *   /embed?component=stat-highlight&player1=Nikola+Jokic&stat=ppg&season=2024-25
  *   /embed?component=player-card&player1=LeBron+James&season=2024-25
+ *
+ * URL format (pre-baked data, skips API call — used by the demo landing page):
+ *   /embed?component=player-compare&data=<base64-encoded-json>
  */
 
 import { StrictMode, useState, useEffect, type CSSProperties } from "react";
@@ -130,8 +133,21 @@ function EmbedApp() {
 			return;
 		}
 
-		// Same origin as this page — works because the embed page is served by
-		// the same Worker that exposes /api/stats.
+		// Pre-baked data path: landing page demo widgets skip the Claude API call.
+		const rawData = params.get("data");
+		if (rawData) {
+			try {
+				setData(JSON.parse(atob(rawData)));
+				setLoading(false);
+			} catch {
+				setError("Failed to decode pre-baked widget data.");
+				setLoading(false);
+			}
+			return;
+		}
+
+		// Live path: same origin as this page — the same Worker that serves /embed
+		// also exposes /api/stats. Claude looks up real stats on every load.
 		const apiUrl = new URL("/api/stats", window.location.origin);
 		params.forEach((v, k) => apiUrl.searchParams.set(k, v));
 
